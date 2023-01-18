@@ -136,7 +136,9 @@ def magic_distances_from_image(img):
     
 
 import dlib
-predictor_path = r"/home/art/models/dlib/shape_predictor_68_face_landmarks.dat"
+from pathlib import Path
+home = str(Path.home())
+predictor_path = f"{home}/models/dlib/shape_predictor_68_face_landmarks.dat"
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
 
@@ -152,7 +154,11 @@ while True:
     faces, confidence, idx = detector.run(img, 1) # Запускаем поиск лиц  
     
     if len(faces) < 1:
-            cv2.putText(img, "Can't see your face", (200, 100), cv2.FONT_HERSHEY_DUPLEX, 1.0, (0, 255, 0), 1, cv2.LINE_AA)
+            
+        cv2.putText(img, "Can't see your face", (200, 100), cv2.FONT_HERSHEY_DUPLEX, 1.0, (0, 255, 0), 1, cv2.LINE_AA)
+        cv2.imshow('verticalized', np.concatenate([img, img], axis=1))
+    
+   
     else:
         
         face = faces[0]
@@ -183,12 +189,12 @@ while True:
 
 
 
-    nose_bridge = landmarks[27]                                                
-    eyes_vector_x, eyes_vector_y = landmarks[45][0] - landmarks[36][0], landmarks[45][1] - landmarks[36][1]
-    angle = math.atan(eyes_vector_y / eyes_vector_x)                           
-                                                                               
-    vert_img = rotate_image(img, center=nose_bridge, angle=180 * angle / pi)
-    cv2.imshow('verticalized', np.concatenate([vert_img, img], axis=1))
+        nose_bridge = landmarks[27]                                                
+        eyes_vector_x, eyes_vector_y = landmarks[45][0] - landmarks[36][0], landmarks[45][1] - landmarks[36][1]
+        angle = math.atan(eyes_vector_y / eyes_vector_x)                           
+                                                                                   
+        vert_img = rotate_image(img, center=nose_bridge, angle=180 * angle / pi)
+        cv2.imshow('verticalized', np.concatenate([vert_img, img], axis=1))
     
     if cv2.waitKey(1) & 0xFF == 27:
         break
